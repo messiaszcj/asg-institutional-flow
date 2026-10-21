@@ -1,0 +1,8 @@
+node_modules/
+dist/
+src-tauri/target/
+engine/build/
+*.key
+*.key.pub
+.env
+.env.*

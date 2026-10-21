@@ -1,31 +1,56 @@
 name: Publicar atualização Windows
+
 on:
   workflow_dispatch:
   push:
     tags:
       - 'v*'
+
 permissions:
   contents: write
+
 jobs:
   publicar:
     runs-on: windows-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-      - uses: Swatinem/rust-cache@v2
+      - name: Baixar codigo do repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust
+        uses: Swatinem/rust-cache@v2
         with:
           workspaces: src-tauri
-      - uses: actions/setup-node@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '24'
           cache: npm
+
       - name: Instalar dependencias frontend
-        run: npm install
+        run: npm ci
+
       - name: Compilar motor C++
         shell: pwsh
         run: |
           cmake -S engine -B engine/build -A x64
           cmake --build engine/build --config Release
+
+      - name: Compilar frontend React
+        run: npm run build
+
+      - name: Verificar arquivos do frontend
+        shell: pwsh
+        run: |
+          if (-not (Test-Path "dist/index.html")) {
+            throw "ERRO: dist/index.html nao foi gerado."
+          }
+          Write-Host "Frontend compilado com sucesso!"
+
       - name: Build e publicacao Tauri
         uses: tauri-apps/tauri-action@v0
         env:

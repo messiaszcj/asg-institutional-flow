@@ -49,7 +49,27 @@ jobs:
           if (-not (Test-Path "dist/index.html")) {
             throw "ERRO: dist/index.html nao foi gerado."
           }
+
           Write-Host "Frontend compilado com sucesso!"
+
+      - name: Verificar configuracao Tauri
+        shell: pwsh
+        run: |
+          if (-not (Test-Path "src-tauri/tauri.conf.json")) {
+            throw "ERRO: tauri.conf.json nao encontrado."
+          }
+
+          $config = Get-Content "src-tauri/tauri.conf.json" -Raw |
+            ConvertFrom-Json
+
+          Write-Host "Versao Tauri: $($config.version)"
+          Write-Host "Frontend: $($config.build.frontendDist)"
+
+          if ($config.bundle.createUpdaterArtifacts -ne $true) {
+            throw "ERRO: createUpdaterArtifacts precisa ser true."
+          }
+
+          Write-Host "Configuracao Tauri validada!"
 
       - name: Build e publicacao Tauri
         uses: tauri-apps/tauri-action@v0
@@ -58,6 +78,8 @@ jobs:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
+          projectPath: .
+          args: --bundles nsis
           tagName: ${{ github.ref_name }}
           releaseName: 'ASG Institutional Flow ${{ github.ref_name }}'
           releaseBody: 'Atualização oficial do aplicativo ASG.'

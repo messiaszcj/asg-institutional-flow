@@ -1,0 +1,20 @@
+[package]
+name = "asg-institutional-flow"
+version = "0.3.3"
+description = "ASG Institutional Flow - demonstration"
+authors = ["ASG Development"]
+edition = "2021"
+
+[lib]
+name = "asg_institutional_flow_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+serde_json = "1"
+tauri = { version = "2", features = [] }
+
+tauri-plugin-updater = "2"
+tauri-plugin-process = "2"

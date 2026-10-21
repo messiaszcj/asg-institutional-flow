@@ -1,0 +1,59 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "ASG Institutional Flow",
+  "version": "0.3.3",
+  "identifier": "br.asg.institutionalflow",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://127.0.0.1:1420",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "ASG Institutional Flow V3.3 - DEMONSTRAÇÃO",
+        "width": 1440,
+        "height": 900,
+        "minWidth": 850,
+        "minHeight": 600,
+        "backgroundColor": "#09111c"
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": [
+      "nsis"
+    ],
+    "resources": {
+      "../engine/build/Release/asg_engine.exe": "engine/asg_engine.exe"
+    },
+    "windows": {
+      "nsis": {
+        "displayLanguageSelector": false,
+        "languages": [
+          "PortugueseBR"
+        ]
+      }
+    },
+    "icon": [
+      "icons/icon.png",
+      "icons/icon.ico"
+    ],
+    "createUpdaterArtifacts": true
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDBGRTBCQ0Y5MjhBNzRFRjAKUldUd1RxY28rYnpnRDdoMThXTkRiRFhqMWhYUDYzaFZDSTYyQWNHaXFtV2ZZWkVaaUdoZDBpY08K",
+      "endpoints": [
+        "https://github.com/messiaszcj/asg-institutional-flow/releases/latest/download/latest.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
+    }
+  }
+}
